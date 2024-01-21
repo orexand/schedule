@@ -13,6 +13,11 @@ struct LessonInfo {
 };
 
 class Lesson {
+private:
+    int start_time;
+    int end_time;
+    std::string lesson_name;
+    std::string homework;
 public:
     Lesson(const LessonInfo& info)
         : start_time(info.start_time), end_time(info.end_time), lesson_name(info.lesson_name), homework(info.homework) {}
@@ -21,15 +26,11 @@ public:
     int getEndTime() const { return end_time; }
     const std::string& getLessonName() const { return lesson_name; }
     const std::string& getHomework() const { return homework; }
-
-private:
-    int start_time;
-    int end_time;
-    std::string lesson_name;
-    std::string homework;
 };
 
 class DayOfWeek {
+private:
+    std::vector<Lesson> lessons;
 public:
     void addLesson(const Lesson& lesson) {
         lessons.push_back(lesson);
@@ -38,13 +39,18 @@ public:
             });
     }
 
-    const std::vector<Lesson>& getLessons() const { return lessons; }
-
-private:
-    std::vector<Lesson> lessons;
+    const std::vector<Lesson>& getLessons() const {
+        return lessons;
+    }
 };
 
 class Schedule {
+private:
+    void addLessonToDay(const std::string& day, const Lesson& lesson) {
+        days[day].addLesson(lesson);
+    }
+
+    std::map<std::string, DayOfWeek> days;
 public:
     void addDay(const std::string& day, const DayOfWeek& day_schedule) {
         days[day] = day_schedule;
@@ -85,11 +91,4 @@ public:
             std::cerr << "Unable to open file: " << filename << std::endl;
         }
     }
-
-private:
-    void addLessonToDay(const std::string& day, const Lesson& lesson) {
-        days[day].addLesson(lesson);
-    }
-
-    std::map<std::string, DayOfWeek> days;
 };
